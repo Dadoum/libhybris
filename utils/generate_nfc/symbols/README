@@ -1,3 +1,0 @@
-These symbols have been obtained via:
-
-   objdump -T <filename>
