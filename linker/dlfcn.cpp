@@ -206,11 +206,6 @@ int __loader_dl_iterate_phdr(int (*cb)(dl_phdr_info* info, size_t size, void* da
   return do_dl_iterate_phdr(cb, data);
 }
 
-// This function is needed by libgcc.a
-int dl_iterate_phdr(int (*cb)(dl_phdr_info* info, size_t size, void* data), void* data) {
-  return __loader_dl_iterate_phdr(cb, data);
-}
-
 #if defined(__arm__)
 _Unwind_Ptr __loader_dl_unwind_find_exidx(_Unwind_Ptr pc, int* pcount) {
   ScopedPthreadMutexLocker locker(&g_dl_mutex);
