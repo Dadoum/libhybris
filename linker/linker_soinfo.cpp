@@ -407,19 +407,26 @@ extern "C" void* android_dlsym(void* handle, const char* symbol);
 
 void (*bionic___system_properties_init)(void) = NULL;
 
+bool skipProps = false;
+
+extern "C" void hybris_set_skip_props(bool value) {
+    skipProps = value;
+}
+
 void soinfo::call_constructors() {
   if (constructors_called) {
     return;
   }
 
   if (soname_ != nullptr && strcmp(soname_, "libc.so") == 0) {
-    DEBUG("HYBRIS: =============> Skipping libc.so (but initializing properties)\n");
-    bionic___system_properties_init = (void(*)())android_dlsym(this, "__system_properties_init");
-    if (!bionic___system_properties_init) {
-        fprintf(stderr, "Could not initialize android system properties!\n");
-        abort();
+    if (!skipProps) {
+        DEBUG("HYBRIS: =============> Skipping libc.so (but initializing properties)\n");
+        bionic___system_properties_init = (void(*)())android_dlsym(this, "__system_properties_init");
+        if (!bionic___system_properties_init) {
+            fprintf(stderr, "Could not initialize android system properties!\n");
+        }
+        bionic___system_properties_init();
     }
-    bionic___system_properties_init();
     constructors_called = true;
     return;
   }
