@@ -74,8 +74,6 @@
 
 #include <hybris/common/hooks.h>
 
-#include <android-config.h>
-
 // this is also used in bionic:
 #define bool int
 

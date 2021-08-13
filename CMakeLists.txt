@@ -40,17 +40,5 @@ add_library(hybris
 
 target_link_libraries(hybris dl rt pthread c stdc++)
 
-FetchContent_Declare(
-        androidh
-        SVN_REPOSITORY https://github.com/ubports/android-headers/trunk/29
-)
-FetchContent_GetProperties(androidh
-        SOURCE_DIR androidh_SOURCE_DIR)
-
-if(NOT androidh_POPULATED)
-    FetchContent_Populate(androidh)
-endif()
-
 target_include_directories(hybris PUBLIC include)
 target_include_directories(hybris PUBLIC linker/bionic/libc/)
-target_include_directories(hybris PUBLIC ${androidh_SOURCE_DIR})
