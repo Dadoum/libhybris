@@ -38,7 +38,7 @@ add_library(hybris
 		legacy_properties/runtime_cache.c
 		legacy_properties/cache.c)
 
-target_link_libraries(hybris dl rt pthread c stdc++)
+target_link_libraries(hybris dl rt pthread c)
 
 target_include_directories(hybris PUBLIC include)
 target_include_directories(hybris PUBLIC linker/bionic/libc/)
