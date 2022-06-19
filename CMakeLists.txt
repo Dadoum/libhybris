@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17)
 include(FetchContent)
-project(hybris)
+project(hybris C CXX)
 set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 11)
 add_library(hybris
