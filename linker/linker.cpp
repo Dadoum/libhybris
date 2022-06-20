@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (C) 2008 The Android Open Source Project
  * All rights reserved.
  *
@@ -1461,7 +1461,9 @@ static bool load_library(android_namespace_t* ns,
   // Open the file.
   int fd = open_library(ns, zip_archive_cache, name, needed_by, &file_offset, &realpath);
   if (fd == -1) {
+#if !BROKEN_MODE
     DL_ERR("library \"%s\" not found", name);
+#endif
     return false;
   }
 
@@ -1700,7 +1702,7 @@ bool find_libraries(android_namespace_t* ns,
 
   // Step 1: expand the list of load_tasks to include
   // all DT_NEEDED libraries (do not load them just yet)
-  for (size_t i = 0; i<load_tasks.size(); ++i) {
+  for (size_t i = 0; i<load_tasks.size(); ) {
     LoadTask* task = load_tasks[i];
     soinfo* needed_by = task->get_needed_by();
 
@@ -1721,7 +1723,11 @@ bool find_libraries(android_namespace_t* ns,
                                &load_tasks,
                                rtld_flags,
                                search_linked_namespaces || is_dt_needed)) {
-      return false;
+#if BROKEN_MODE
+        load_tasks.erase(load_tasks.begin() + i);
+        continue;
+#endif
+        return false;
     }
 
     soinfo* si = task->get_soinfo();
@@ -1739,6 +1745,7 @@ bool find_libraries(android_namespace_t* ns,
     if (soinfos_count < library_names_count) {
       soinfos[soinfos_count++] = si;
     }
+      ++i;
   }
 
   // Step 2: Load libraries in random order (see b/24047022)
@@ -2690,6 +2697,9 @@ bool VersionTracker::init_verneed(const soinfo* si_from) {
     });
 
     if (target_si == nullptr) {
+#if BROKEN_MODE
+        continue;
+#endif
       DL_ERR("cannot find \"%s\" from verneed[%zd] in DT_NEEDED list for \"%s\"",
           target_soname, i, si_from->get_realpath());
       return false;
@@ -2983,10 +2993,13 @@ bool soinfo::relocate(const VersionTracker& version_tracker, ElfRelIteratorT&& r
       if (sym_addr == 0 && s == nullptr) {
         // We only allow an undefined symbol if this is a weak reference...
         s = &symtab_[sym];
-        if (ELF_ST_BIND(s->st_info) != STB_WEAK) {
-          DL_ERR("cannot locate symbol \"%s\" referenced by \"%s\"...", sym_name, get_realpath());
-          return false;
-        }
+
+#if !BROKEN_MODE
+          if (ELF_ST_BIND(s->st_info) != STB_WEAK) {
+              DL_ERR("cannot locate symbol \"%s\" referenced by \"%s\"...", sym_name, get_realpath());
+              return false;
+          }
+#endif
 
         /* IHI0044C AAELF 4.5.1.1:
 

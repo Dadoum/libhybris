@@ -414,6 +414,9 @@ extern "C" void hybris_set_skip_props(bool value) {
 }
 
 void soinfo::call_constructors() {
+#if BROKEN_MODE
+  return;
+#endif
   if (constructors_called) {
     return;
   }
