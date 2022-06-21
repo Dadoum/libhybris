@@ -5,12 +5,9 @@ set(CMAKE_CXX_EXTENSIONS ON)
 set(CMAKE_CXX_STANDARD 11)
 add_library(hybris
 		hooks.c
-		hooks_shm.c
 		strlcpy.c
 		strlcat.c
 		logging.c
-		sysconf.c
-		dso_handle_counters.cpp
 		strlcpy.c
 		strlcat.c
 		linker/hybris_compat.cpp
@@ -33,10 +30,7 @@ add_library(hybris
 		linker/linker_soinfo.cpp
 		linker/linker_tls.cpp
 		linker/linker_utils.cpp
-		linker/rt.cpp
-		legacy_properties/properties.c
-		legacy_properties/runtime_cache.c
-		legacy_properties/cache.c)
+		linker/rt.cpp)
 
 target_include_directories(hybris PUBLIC include)
 target_include_directories(hybris PUBLIC linker/bionic/libc/)
