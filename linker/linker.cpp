@@ -2813,6 +2813,7 @@ bool VersionTracker::init(const soinfo* si_from) {
 // independent from soinfo (?).
 bool soinfo::lookup_version_info(const VersionTracker& version_tracker, ElfW(Word) sym,
                                  const char* sym_name, const version_info** vi) {
+#if !BROKEN_MODE
   const ElfW(Versym)* sym_ver_ptr = get_versym(sym);
   ElfW(Versym) sym_ver = sym_ver_ptr == nullptr ? 0 : *sym_ver_ptr;
 
@@ -2825,9 +2826,12 @@ bool soinfo::lookup_version_info(const VersionTracker& version_tracker, ElfW(Wor
       return false;
     }
   } else {
+#endif
     // there is no version info
     *vi = nullptr;
+#if !BROKEN_MODE
   }
+#endif
 
   return true;
 }
