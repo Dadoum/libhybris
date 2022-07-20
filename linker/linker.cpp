@@ -2819,13 +2819,11 @@ bool soinfo::lookup_version_info(const VersionTracker& version_tracker, ElfW(Wor
   if (sym_ver != VER_NDX_LOCAL && sym_ver != VER_NDX_GLOBAL) {
     *vi = version_tracker.get_version_info(sym_ver);
 
-#if !BROKEN_MODE
     if (*vi == nullptr) {
       DL_ERR("cannot find verneed/verdef for version index=%d "
           "referenced by symbol \"%s\" at \"%s\"", sym_ver, sym_name, get_realpath());
       return false;
     }
-#endif
   } else {
     // there is no version info
     *vi = nullptr;
