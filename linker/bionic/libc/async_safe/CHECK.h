@@ -36,7 +36,7 @@ __BEGIN_DECLS
 
 // TODO: replace this with something more like <android-base/logging.h>'s family of macros.
 #if BROKEN_MODE
-#define CHECK(predicate)
+#define CHECK(predicate) predicate
 #else
 #define CHECK(predicate) \
   do { \
